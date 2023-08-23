@@ -4,7 +4,7 @@ package ua.javarush.encoder;
 import java.util.ArrayList;
 
 public class Runner {
-    public int key;
+
 
 
     public static void main(String[] args) {
