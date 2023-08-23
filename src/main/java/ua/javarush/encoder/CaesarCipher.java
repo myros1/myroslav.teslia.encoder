@@ -6,11 +6,10 @@ public class CaesarCipher {
 
 
     public String crypt(String text, int key, String command) {
-        if (command.equals("ENCRYPT")) {
-            key = key;
-        } else if (command.equals("DECRYPT")) {
+        if (command.equals("DECRYPT")) {
             key = -key;
         }
+
         ArrayList<Character> latinAlphabet = new Alphabet().ENGLISH_ALPABET;
         key = key % latinAlphabet.size();                                       //Make short key if key > size of Alphabet
         int newKey;
