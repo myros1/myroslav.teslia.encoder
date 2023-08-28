@@ -1,34 +1,41 @@
 package ua.javarush.encoder;
 
 
+import ua.javarush.encoder.exeptions.NotFoundInAlphabets;
+import ua.javarush.encoder.exeptions.UnknownCommandRuntimeExeption;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Runner {
-
-
-
     public static void main(String[] args) {
         String command = args[0];
-        String pathNotUseNow = args[1];
+        String path = args[1];
         int key = Integer.parseInt(args[2]);
-        String path = "target/[ENCRYPT]Test.txt";
-
-        FileService fileService = new FileService();
-        ArrayList<String> reedList = new ArrayList<>();
-        reedList = fileService.reed(path);
-        CaesarCipher caesarCipher = new CaesarCipher();
-        ArrayList<String> cryptText = new ArrayList<>();
-
-        for (String string:reedList) {
-            cryptText.add(caesarCipher.crypt(string,key,command));
+        Commands commands = new Commands();
+        command = commands.getCommand(command);
+        if (command.equals("UNKNOWN_COMMAND")) {
+            throw new UnknownCommandRuntimeExeption(command);
         }
+        FileService fileService = new FileService();
+        ArrayList<String> reedList;
+        reedList = fileService.reed(path);
 
-        System.out.println(cryptText);
-        fileService.write(cryptText, path, command);
-
+        if (command.equals("BRUTE_FORCE")) {
+            BruteForce bruteForce = new AlphabetSwitcher().getAlphabet(reedList);
+            HashMap<Character, Integer> symbolsToNumber = bruteForce.findRepeatSymbols(reedList);
+            char symbol = bruteForce.findMostRepetitiveSymbol(symbolsToNumber);
+            bruteForce.chooseBestKey(symbol,reedList,bruteForce);
+        } else {
+            ArrayList<String> cryptText = new ArrayList<>();
+            CaesarCipher caesarCipher = new AlphabetSwitcher().getCipher(reedList);
+            if (caesarCipher == null) {
+                throw new NotFoundInAlphabets("Not contain in alphabets");
+            }
+            for (String string : reedList) {
+                cryptText.add(caesarCipher.crypt(string, key, command));
+            }
+            FileServiceWithNewFilename fileServiceWithNewFilename = new FileServiceWithNewFilename(new FileService());
+            fileServiceWithNewFilename.write(cryptText, path, command);
+        }
     }
-
-
 }
-
-
