@@ -1,7 +1,6 @@
 package ua.javarush.encoder;
 
 import ua.javarush.encoder.exeptions.NotFoundInAlphabetsException;
-
 import java.util.ArrayList;
 
 public class AlphabetSwitcher {
