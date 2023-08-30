@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BruteForce {
-    ArrayList<Character> alphabet;
+    private final ArrayList<Character> alphabet;
 
     public BruteForce(ArrayList<Character> alphabet) {
         this.alphabet = alphabet;
@@ -43,39 +43,40 @@ public class BruteForce {
     }
 
     public Integer getBruteForceKey(char symbol, char example) {
-        int exampleKey = 0;
-        for (int i = 0; i < alphabet.size(); i++) {
-            if (example == alphabet.get(i)) {
-                exampleKey = i;
-            }
-        }
-        for (int i = 0; i < alphabet.size(); i++) {
-            if (symbol == alphabet.get(i)) {
-                if ((i - exampleKey) < 0) {
-                    return alphabet.size() + i - exampleKey;
-                }
-            }
-        }
-        return null;
+        int exampleKey = alphabet.indexOf(example);
+        if ((alphabet.indexOf(symbol) - exampleKey) < 0) {
+            return alphabet.size() + alphabet.indexOf(symbol) - exampleKey;
+        } else return alphabet.indexOf(symbol) - exampleKey;
+
     }
 
-    public void chooseBestKey(char symbol,ArrayList<String> reedList,BruteForce bruteForce) {
+    public void chooseBestKey(char symbol, ArrayList<String> reedList, BruteForce bruteForce) {
         ConsoleService consoleService = new ConsoleService();
+        Alphabets alphabets = new Alphabets();
         CaesarCipher caesarCipher = new AlphabetSwitcher().getCipher(reedList);
-        char[] exampleSymbols = new char[]{' ', 'e', 't', 'a', 'o'};
+        char[] exampleSymbols;
+        if (bruteForce.getAlphabet().equals(alphabets.ENGLISH_ALPHABET)) {
+            exampleSymbols = new char[]{' ', 'e', 't', 'a', 'o'};
+        } else {
+            exampleSymbols = new char[]{' ', 'о', 'н', 'а', 'и'};
+        }
+
         int keyBruteForce;
+        System.out.println("Next, I will find 5 keys for decryption");
         for (int i = 0; i < 4; i++) {
             keyBruteForce = bruteForce.getBruteForceKey(symbol, exampleSymbols[i]);
-            consoleService.print((i+1) + " case for key = " + keyBruteForce);
+            consoleService.print((i + 1) + " key = " + keyBruteForce + "\n");
             for (String string : reedList) {
                 consoleService.print(caesarCipher.crypt(string, keyBruteForce, "DECRYPT"));
             }
-            consoleService.print("OKAY? yes/no");
+            consoleService.print("\nOKAY? yes/no ");
             if (consoleService.read().equals("yes")) {
-                break;
+                return;
             }
         }
     }
+
+    public ArrayList<Character> getAlphabet() {
+        return alphabet;
+    }
 }
-
-

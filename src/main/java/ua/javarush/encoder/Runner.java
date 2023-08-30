@@ -1,8 +1,7 @@
 package ua.javarush.encoder;
 
-
-import ua.javarush.encoder.exeptions.NotFoundInAlphabets;
-import ua.javarush.encoder.exeptions.UnknownCommandRuntimeExeption;
+import ua.javarush.encoder.exeptions.NotFoundInAlphabetsException;
+import ua.javarush.encoder.exeptions.UnknownCommandRuntimeException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -14,12 +13,11 @@ public class Runner {
         Commands commands = new Commands();
         command = commands.getCommand(command);
         if (command.equals("UNKNOWN_COMMAND")) {
-            throw new UnknownCommandRuntimeExeption(command);
+            throw new UnknownCommandRuntimeException(command);
         }
         FileService fileService = new FileService();
         ArrayList<String> reedList;
         reedList = fileService.reed(path);
-
         if (command.equals("BRUTE_FORCE")) {
             BruteForce bruteForce = new AlphabetSwitcher().getAlphabet(reedList);
             HashMap<Character, Integer> symbolsToNumber = bruteForce.findRepeatSymbols(reedList);
@@ -29,13 +27,12 @@ public class Runner {
             ArrayList<String> cryptText = new ArrayList<>();
             CaesarCipher caesarCipher = new AlphabetSwitcher().getCipher(reedList);
             if (caesarCipher == null) {
-                throw new NotFoundInAlphabets("Not contain in alphabets");
+                throw new NotFoundInAlphabetsException("Not contain in alphabets");
             }
             for (String string : reedList) {
                 cryptText.add(caesarCipher.crypt(string, key, command));
             }
-            FileServiceWithNewFilename fileServiceWithNewFilename = new FileServiceWithNewFilename(new FileService());
-            fileServiceWithNewFilename.write(cryptText, path, command);
+            fileService.writeWithNewFileName(cryptText, path, command);
         }
     }
 }

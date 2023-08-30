@@ -2,7 +2,6 @@ package ua.javarush.encoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 public class Alphabets {
     public final ArrayList<Character> ENGLISH_ALPHABET = new ArrayList<>(Arrays.asList(
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
