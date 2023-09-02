@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class FileService {
@@ -22,15 +23,15 @@ public class FileService {
         }
     }
 
-    public void writeWithNewFileName(ArrayList<String> text, String path, String command) {
-        String fileName = "/[" + command + "]" + path.substring(path.lastIndexOf("/") + 1);      //Create new file name : [COMMAND]FileName
-        String newPath = path.substring(0, path.lastIndexOf("/")) + fileName;                             //Create path in the same directory
-        write(text, newPath, command);
+  public void writeWithNewFileName(ArrayList<String> text, Path path, String command) {
+      String fileName = "/[" + command + "]" + path.getFileName();
+      String newPath = path.getParent() + fileName;
+      write(text, newPath, command);
     }
 
-    public ArrayList<String> reed(String filePath) {
+    public ArrayList<String> reed(Path filePath) {
         ArrayList<String> text = new ArrayList<>();
-        try (FileReader fileReader = new FileReader(filePath)) {
+        try (FileReader fileReader = new FileReader(String.valueOf(filePath))) {
             int offset = 0;
             char[] buffer = new char[LENGTH_BUFFER_REED_FILE];
             while (fileReader.ready()) {
